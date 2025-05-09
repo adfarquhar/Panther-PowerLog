@@ -1,16 +1,76 @@
-export default async function HomePage() {
-  // const paramsPromise = new Promise((resolve) => resolve(params)); // Example for awaiting props
-  // const searchParamsPromise = new Promise((resolve) => resolve(searchParams)); // Example for awaiting props
-  // await paramsPromise;
-  // await searchParamsPromise;
+'use client';
+
+import { createNewWorkoutSession } from "@/actions/workout-sessions";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
+import { useTransition } from "react";
+
+export default function HomePage() {
+  const [isPending, startTransition] = useTransition();
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+
+    startTransition(async () => {
+      toast.loading('Starting new workout...');
+      try {
+        const result = await createNewWorkoutSession(formData);
+        // Dismiss the loading toast regardless of the outcome before showing a new one
+        toast.dismiss();
+
+        if (result?.error) {
+          toast.error(result.error);
+          // For debugging, you could log fieldErrors if they exist:
+          // if (result.fieldErrors) console.log("Field errors:", result.fieldErrors);
+        }
+        // No explicit success toast here as the action handles redirection.
+      } catch (e) {
+        // Catch errors if createNewWorkoutSession itself throws (unlikely for this action)
+        toast.dismiss(); // Ensure loading toast is dismissed
+        toast.error("An unexpected error occurred while starting the workout.");
+        console.error("Error in handleSubmit transition:", e);
+      }
+    });
+  };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <h1 className="text-4xl font-bold">
-          Welcome to Panther PowerLog!
+    <main className="flex min-h-screen flex-col items-center justify-center p-8 bg-gradient-to-br from-slate-900 to-slate-800 text-white">
+      <div className="text-center mb-12">
+        <h1 className="text-6xl font-bold tracking-tight">
+          Panther <span className="text-emerald-400">PowerLog</span>
         </h1>
+        <p className="mt-4 text-2xl text-slate-300">
+          Track your gains. Crush your PRs.
+        </p>
       </div>
+
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-sm bg-slate-800 p-8 rounded-xl shadow-2xl space-y-6"
+      >
+        <div>
+          <Label htmlFor="workoutName" className="text-lg font-medium text-slate-200">
+            Workout Name (Optional)
+          </Label>
+          <Input
+            id="workoutName"
+            name="workoutName"
+            type="text"
+            placeholder="e.g., Morning Lift, Leg Day"
+            className="mt-2 w-full bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:ring-emerald-500 focus:border-emerald-500 h-12 text-lg"
+          />
+        </div>
+        <Button
+          type="submit"
+          className="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-semibold rounded-lg h-14 text-xl transition-all duration-150 ease-in-out transform active:scale-95"
+          disabled={isPending}
+        >
+          {isPending ? 'Starting Workout...' : 'Start New Workout'}
+        </Button>
+      </form>
     </main>
   );
 } 
