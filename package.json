@@ -1,0 +1,46 @@
+{
+  "name": "panther-powerlog",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "check": "pnpm run lint && pnpm run type-check",
+    "type-check": "tsc --noEmit",
+    "supabase:migration:new": "pnpm supabase migration new",
+    "supabase:db:push": "pnpm supabase db push",
+    "supabase:db:reset": "pnpm supabase db reset",
+    "supabase:generate-types": "pnpm supabase gen types typescript --project-id smpqevernrcufavbjsbg --schema public > lib/supabase/database.types.ts"
+  },
+  "dependencies": {
+    "@heroicons/react": "^2.2.0",
+    "@radix-ui/react-slot": "^1.2.2",
+    "@supabase/ssr": "^0.6.1",
+    "@supabase/supabase-js": "^2.49.4",
+    "@tailwindcss/postcss": "^4.1.6",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.509.0",
+    "next": "15.3.2",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "sonner": "^2.0.3",
+    "tailwind-merge": "^3.2.0",
+    "tailwindcss": "^4.1.6",
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^3.24.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.6",
+    "@types/node": "^22.15.17",
+    "@types/react": "^19.1.3",
+    "@types/react-dom": "^19.1.3",
+    "eslint": "^9.26.0",
+    "eslint-config-next": "15.3.2",
+    "postcss": "^8.5.3",
+    "supabase": "^2.22.12",
+    "typescript": "^5.8.3"
+  }
+}

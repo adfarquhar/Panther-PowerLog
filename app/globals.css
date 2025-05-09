@@ -1,0 +1,11 @@
+/* app/globals.css */
+@import "tailwindcss";
+@import "./theme.css"; /* Import your custom theme properties */
+
+/* You can add any truly global styles here if necessary,
+   but prefer using Tailwind utilities or component classes. */
+
+body {
+  /* Example of a global style - but try to use theme variables if possible */
+  /* font-family: sans-serif; */
+} 

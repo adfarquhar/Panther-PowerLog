@@ -1,0 +1,19 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Stack: Next.js (App Router), TypeScript, Supabase (project-id smpqevernrcufavbjsbg), Tailwind V4+, Shadcn UI, Heroicons (@heroicons/react/24/outline), pnpm.
+Directory Structure: 
+    Actions: actions/
+    UI Components: components/ (or app/**/_components/)
+    Utilities/Helpers: lib/
+    DB Migrations: supabase/migrations/
+Next.js: 
+    Await Props: In Server Components, await the params and searchParams props before use. // Example: await paramsPromise, await searchParamsPromise
+Server Actions: Use for forms/mutations; include validation (Zod) and auth checks.
+Supabase:
+    Schema Changes: Use Supabase CLI migrations (pnpm supabase migration new ..., pnpm supabase db push) ONLY. Do not use the dashboard UI for schema changes.
+    Interaction: Use helpers from lib/supabase/server.ts; use RPC for complex/transactional DB ops.
+Code Style: Adhere to Biome/Prettier/ESLint (pnpm run check).
+Use sonner for all feedback. if you notice Sonner not being used for feedback, please correct it. 

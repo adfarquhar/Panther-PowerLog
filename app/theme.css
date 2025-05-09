@@ -1,0 +1,27 @@
+/* app/theme.css */
+
+@theme {
+  /* Example custom property (can be expanded later) */
+  /* --color-brand-primary: oklch(60% 0.2 260); */
+
+  /* You can define your custom colors, fonts, spacing, etc. here */
+  /* 
+  For example:
+  --color-primary: var(--theme-color-primary);
+  --color-primary-50: oklch(91.45% 0.023 264);
+  --color-primary-100: oklch(84% 0.053 263);
+  */
+}
+
+/* You can also define global component layer styles here if needed */
+/*
+@layer components {
+  body {
+    color: var(--color-text);
+    background: var(--color-background);
+  }
+  h1 {
+    font-size: var(--text-3xl);
+  }
+}
+*/ 
