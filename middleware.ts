@@ -56,22 +56,33 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  const { data: { user } } = await supabase.auth.getUser();
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
 
-  const { pathname } = request.nextUrl;
+    const { pathname } = request.nextUrl;
 
-  // Define public paths that don't require authentication
-  const publicPaths = ['/login', '/signup', '/auth/callback']; // Add /signup
+    // Define public paths that don't require authentication
+    const publicPaths = ['/login', '/signup', '/auth/callback']; // Add /signup
 
-  // If the user is not authenticated and is trying to access a protected route
-  if (!user && !publicPaths.some(path => pathname.startsWith(path))) {
-    // Redirect to the login page
-    return NextResponse.redirect(new URL('/login', request.url));
-  }
+    // If the user is not authenticated and is trying to access a protected route
+    if (!user && !publicPaths.some(path => pathname.startsWith(path))) {
+      // Redirect to the login page
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
 
-  // If the user is authenticated and tries to access the login page, redirect them to the home page
-  if (user && (pathname.startsWith('/login') || pathname.startsWith('/signup'))) { // Add /signup here too
-    return NextResponse.redirect(new URL('/', request.url));
+    // If the user is authenticated and tries to access the login page, redirect them to the home page
+    if (user && (pathname.startsWith('/login') || pathname.startsWith('/signup'))) { // Add /signup here too
+      return NextResponse.redirect(new URL('/', request.url));
+    }
+  } catch (error: any) {
+    console.error('Middleware error:', error);
+    console.error('Middleware error message:', error.message);
+    console.error('Middleware error stack:', error.stack);
+    // Optionally, rethrow or return a generic error response
+    // For now, let's just return the original response to see logs
+    // or redirect to an error page if preferred.
+    // throw error; // This would likely result in the same MIDDLEWARE_INVOCATION_FAILED
+    return NextResponse.redirect(new URL('/error?message=middleware_failed', request.url)); // Or a more specific error page
   }
 
   return response;
