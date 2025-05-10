@@ -37,7 +37,7 @@ export default function HomePage() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-8">
+    <main className="relative flex min-h-screen flex-col items-center justify-center p-8 bg-[url('/assets/panther.webp')] bg-no-repeat bg-[length:auto_90vh] bg-bottom">
       <div className="text-center mb-12">
         <h1 className="text-6xl font-bold tracking-tight">
           Panther <span className="text-emerald-400">PowerLog</span>
@@ -49,7 +49,7 @@ export default function HomePage() {
 
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-sm bg-slate-800 p-8 rounded-xl shadow-2xl space-y-6"
+        className="w-full max-w-sm p-8 rounded-xl shadow-2xl space-y-6"
       >
         <div>
           <Label htmlFor="workoutName" className="text-lg font-medium text-slate-200">
@@ -60,12 +60,12 @@ export default function HomePage() {
             name="workoutName"
             type="text"
             placeholder="e.g., Morning Lift, Leg Day"
-            className="mt-2 w-full bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:ring-emerald-500 focus:border-emerald-500 h-12 text-lg"
+            className="mt-2 w-full text-white placeholder-slate-400 focus:ring-emerald-500 focus:border-emerald-500 h-12 text-lg"
           />
         </div>
         <Button
           type="submit"
-          className="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-semibold rounded-lg h-14 text-xl transition-all duration-150 ease-in-out transform active:scale-95"
+          className="w-full bg-emerald-500 hover:bg-emerald-600 font-semibold rounded-lg h-14 text-xl transition-all duration-150 ease-in-out transform active:scale-95"
           disabled={isPending}
         >
           {isPending ? 'Starting Workout...' : 'Start New Workout'}

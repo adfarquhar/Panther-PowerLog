@@ -24,9 +24,9 @@ export default async function RootLayout({
   return (
     /* suppressHydrationWarning for potential themeing/dark mode issues initially */
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.className} flex flex-col min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-slate-100`}>
+      <body className={`${inter.className} flex flex-col min-h-screen`}>
         <header className="z-50 w-full">
-          <div className="flex h-14 items-center justify-between px-4 sm:px-6 lg:px-8">
+          <div className="flex h-14 items-center justify-between px-4 sm:px-6 text-white lg:px-8">
             <div className="mr-4 flex items-center">
               <Link href="/" className="font-bold text-lg">
                 Panther <span className="text-emerald-400">PowerLog</span>

@@ -56,7 +56,7 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { user } } = await supabase.auth.getUser();
 
   const { pathname } = request.nextUrl;
 
@@ -64,13 +64,13 @@ export async function middleware(request: NextRequest) {
   const publicPaths = ['/login', '/signup', '/auth/callback']; // Add /signup
 
   // If the user is not authenticated and is trying to access a protected route
-  if (!session && !publicPaths.some(path => pathname.startsWith(path))) {
+  if (!user && !publicPaths.some(path => pathname.startsWith(path))) {
     // Redirect to the login page
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
   // If the user is authenticated and tries to access the login page, redirect them to the home page
-  if (session && (pathname.startsWith('/login') || pathname.startsWith('/signup'))) { // Add /signup here too
+  if (user && (pathname.startsWith('/login') || pathname.startsWith('/signup'))) { // Add /signup here too
     return NextResponse.redirect(new URL('/', request.url));
   }
 
@@ -87,6 +87,6 @@ export const config = {
      * - api/auth (Supabase auth routes, if you have them here)
      * Feel free to modify this pattern to fit your needs.
      */
-    '/((?!_next/static|_next/image|favicon.ico|auth/callback).*) ',
+    '/((?!api|_next/static|_next/image|assets/.*|favicon.ico|.*\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 }; 
