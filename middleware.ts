@@ -56,7 +56,7 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  const { data: { user } } = await (supabase.auth as any).getUser();
+  const { data: { user } } = await supabase.auth.getUser();
 
   const { pathname } = request.nextUrl;
 

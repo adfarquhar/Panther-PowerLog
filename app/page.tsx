@@ -42,7 +42,7 @@ export default function HomePage() {
         <h1 className="text-6xl font-bold tracking-tight">
           Panther <span className="text-emerald-400">PowerLog</span>
         </h1>
-        <p className="mt-4 text-2xl text-slate-300">
+        <p className="mt-4 text-2xl ">
           Track your gains. Crush your PRs.
         </p>
       </div>
@@ -52,8 +52,8 @@ export default function HomePage() {
         className="w-full max-w-sm p-8 rounded-xl shadow-2xl space-y-6"
       >
         <div>
-          <Label htmlFor="workoutName" className="text-lg font-medium text-slate-200">
-            Workout Name (Optional)
+          <Label htmlFor="workoutName" className="text-lg font-medium">
+            Workout Name
           </Label>
           <Input
             id="workoutName"
@@ -63,13 +63,15 @@ export default function HomePage() {
             className="mt-2 w-full text-white placeholder-slate-400 focus:ring-emerald-500 focus:border-emerald-500 h-12 text-lg"
           />
         </div>
-        <Button
-          type="submit"
-          className="w-full bg-emerald-500 hover:bg-emerald-600 font-semibold rounded-lg h-14 text-xl transition-all duration-150 ease-in-out transform active:scale-95"
-          disabled={isPending}
-        >
-          {isPending ? 'Starting Workout...' : 'Start New Workout'}
-        </Button>
+        <div className="flex justify-center">
+          <Button
+            type="submit"
+            className="bg-emerald-500 hover:bg-emerald-600 font-semibold rounded-lg text-xl transition-all duration-150 ease-in-out transform active:scale-95 px-6 py-3"
+            disabled={isPending}
+          >
+            {isPending ? 'Starting Workout...' : 'BEGIN'}
+          </Button>
+        </div>
       </form>
     </main>
   );
