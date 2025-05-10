@@ -37,7 +37,7 @@ export default function HomePage() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-8 bg-gradient-to-br from-slate-900 to-slate-800 text-white">
+    <main className="flex min-h-screen flex-col items-center justify-center p-8">
       <div className="text-center mb-12">
         <h1 className="text-6xl font-bold tracking-tight">
           Panther <span className="text-emerald-400">PowerLog</span>

@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button'; // Assuming Button component from Shadcn UI
 import type { User } from '@supabase/supabase-js';
 import { toast } from 'sonner';
+import { ArrowLeftStartOnRectangleIcon } from '@heroicons/react/24/outline';
 
 export default function AuthButton({ initialUser }: { initialUser: User | null }) {
   const supabase = createSupabaseBrowserClient();
@@ -58,11 +59,8 @@ export default function AuthButton({ initialUser }: { initialUser: User | null }
   if (user) {
     return (
       <div className="flex items-center gap-2 sm:gap-4">
-        <span className="text-sm text-gray-600 dark:text-gray-300 hidden sm:inline">
-          {user.email}
-        </span>
         <Button onClick={handleLogout} variant="outline" size="sm">
-          Logout
+          <ArrowLeftStartOnRectangleIcon className="h-5 w-5" />
         </Button>
       </div>
     );

@@ -1,8 +1,8 @@
 import { getMuscleGroups } from '@/actions/muscle-groups';
-import Link from 'next/link';
-import Image from 'next/image'; // Added import for Next.js Image component
-// import { ChevronRightIcon } from '@heroicons/react/24/outline'; // Removed unused import
+import Link from 'next/link'; // No longer needed for Cancel button
 import { toast } from 'sonner'; // For displaying errors, though ideally handled by an error component
+import { MuscleGroupCard } from '@/app/workout/_components/MuscleGroupCard'; // Import the new component
+import { BackButton } from '@/components/BackButton'; // Import the new BackButton
 
 // Interface for the resolved params object
 interface MuscleGroupPageResolvedParams {
@@ -12,11 +12,16 @@ interface MuscleGroupPageResolvedParams {
 // Type alias for the Promise-wrapped params
 type MuscleGroupPageParamsPromise = Promise<MuscleGroupPageResolvedParams>;
 
-// Helper function to generate image path (assuming names match filenames)
-// Converts "Upper Back" to "upper-back.webp"
+// Helper function to generate image path
+/* // Commenting out as it's moved to MuscleGroupCard, can be deleted if not used elsewhere
 const getImagePath = (muscleGroupName: string) => {
-  return `/assets/muscle-groups/${muscleGroupName.toLowerCase().replace(/\s+/g, '-')}.webp`;
+  const slug = muscleGroupName.toLowerCase().replace(/\s+/g, '-');
+  // All specific mappings removed as filenames now match the slugified names.
+  // For 'other', if other.webp is not available and no default is set, it will 404.
+  // Consider adding other.webp or a default.webp and logic here.
+  return `/assets/muscle-groups/${slug}.webp`;
 };
+*/
 
 export default async function MuscleGroupSelectionPage({
   params: paramsPromise, // Expect params as a Promise
@@ -25,7 +30,9 @@ export default async function MuscleGroupSelectionPage({
 }) {
   const params = await paramsPromise; // Await the params
   const { sessionId } = params;
-  const { data: muscleGroups, error } = await getMuscleGroups();
+  const { data: initialMuscleGroups, error } = await getMuscleGroups();
+  let muscleGroups = initialMuscleGroups;
+  console.log("Fetched muscle groups:", muscleGroups); // Log all fetched groups
 
   if (error) {
     // This is a server component, so toast won't work directly here for client-side display.
@@ -58,42 +65,38 @@ export default async function MuscleGroupSelectionPage({
     );
   }
 
+  // Sort muscle groups to put "Other" last
+  if (muscleGroups) {
+    muscleGroups = muscleGroups.sort((a, b) => {
+      if (a.name.toLowerCase() === 'other') return 1; // Move a to the end
+      if (b.name.toLowerCase() === 'other') return -1; // Move b to the end (so a comes before)
+      return 0; // Keep original order for others (or apply other sorting like a.name.localeCompare(b.name) if needed)
+    });
+  }
+
   return (
     <div className="container mx-auto py-8 px-4">
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Select Muscle Group</h1>
-        <Link href={`/workout/${sessionId}/log`} className="text-sm text-primary hover:underline">
-          Cancel
-        </Link>
+      {/* Sticky BackButton at the top left */}
+      <div className="sticky top-4 left-0 z-50 mb-4"> {/* Re-added sticky, top-4, left-0, z-50 */}
+        <BackButton />
       </div>
+
+      {/* Header text was removed in a previous step */}
       
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4"> {/* Using a grid for better layout */}
-        {muscleGroups.map((group) => (
-          <Link
-            key={group.id}
-            href={`/workout/${sessionId}/add-exercise/exercises?muscleGroupId=${group.id}`}
-            className="relative block rounded-lg border bg-card text-card-foreground shadow-sm transition-colors hover:bg-muted/80 active:bg-muted/90 overflow-hidden group" // Added relative, overflow-hidden and group
-          >
-            <div className="relative h-32 w-full sm:h-40"> {/* Container for image, ensure it has a defined height */}
-              <Image
-                src={getImagePath(group.name)} // Use helper to get image path
-                alt={group.name}
-                fill // Use fill to make image responsive within its parent
-                style={{ objectFit: 'cover' }} // Ensure image covers the area
-                className="transition-transform duration-300 group-hover:scale-105" // Optional: zoom effect on hover
-                // It's good practice to provide width/height if not using fill, or if fill's parent isn't sized.
-                // For fill to work, parent must be relative, block, or flex. Here, parent div is relative.
-                sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw" // Optimize image loading
-              />
-              <div className="absolute inset-0 bg-black bg-opacity-30 group-hover:bg-opacity-40 transition-opacity duration-300" /> {/* Dark overlay for better text visibility */}
-              <div className="absolute inset-0 flex items-center justify-center p-2">
-                <span className="font-semibold text-white text-center text-lg drop-shadow-md">{group.name}</span>
-              </div>
-            </div>
-            {/* Removed ChevronRightIcon as it might clutter the image card design */}
-            {/* If needed, it can be added back, perhaps next to the text or in a corner */}
-          </Link>
-        ))}
+      <div className="grid grid-cols-2 gap-4"> {/* Max 2 columns wide */}
+        {muscleGroups.map((group) => {
+          // const imagePath = getImagePath(group.name); // Logic moved to component
+          // const isOther = group.name.toLowerCase() === "other"; // Logic moved to component
+          // console.log(`Muscle Group: "${group.name}", Generated Path: "${imagePath}"`); // Logging can be inside component if needed or removed
+          return (
+            <MuscleGroupCard
+              key={group.id}
+              sessionId={sessionId}
+              group={group}
+              // getImagePath={getImagePath} // Removed prop
+            />
+          );
+        })}
       </div>
     </div>
   );

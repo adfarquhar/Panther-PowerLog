@@ -3,7 +3,7 @@ description:
 globs: 
 alwaysApply: true
 ---
-Stack: Next.js (App Router), TypeScript, Supabase (project-id smpqevernrcufavbjsbg), Tailwind V4+, Shadcn UI, Heroicons (@heroicons/react/24/outline), pnpm.
+Stack: React 19, Next.js (App Router), TypeScript, Supabase (project-id smpqevernrcufavbjsbg), Tailwind V4+, Shadcn UI, Heroicons (@heroicons/react/24/outline), pnpm.
 Directory Structure: 
     Actions: actions/
     UI Components: components/ (or app/**/_components/)
