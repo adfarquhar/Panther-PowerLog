@@ -5,8 +5,16 @@ import { Button } from '@/components/ui/button'
 import { notFound, redirect } from 'next/navigation'
 import { Tables, Database } from '@/lib/supabase/database.types'
 import { PlayIcon } from '@heroicons/react/24/outline'
-import { AddExerciseToSessionDialog, ExerciseSelectItem } from '@/app/workout/_components/AddExerciseToSessionDialog'
+import { AddExerciseToSessionDialog } from '@/app/workout/_components/AddExerciseToSessionDialog'
 import { SupabaseClient } from '@supabase/supabase-js'
+
+// Define ExerciseSelectItem here as it's used by getAvailableExercises
+// Commenting out as getAvailableExercises is no longer called.
+// interface ExerciseSelectItem {
+//   id: string;
+//   name: string;
+//   muscle_groups: { name: string } | null;
+// }
 
 async function getSessionDetails(
   supabase: SupabaseClient<Database>,
@@ -51,23 +59,6 @@ async function getWorkoutExercises(
   >
 }
 
-async function getAvailableExercises(
-    supabase: SupabaseClient<Database>,
-    userId: string
-): Promise<ExerciseSelectItem[]> {
-    const { data, error } = await supabase
-        .from('exercises')
-        .select('id, name, muscle_groups (name)')
-        .or(`user_id.eq.${userId},user_id.is.null`)
-        .order('name', { ascending: true });
-
-    if (error) {
-        console.error('Error fetching available exercises:', error);
-        return [];
-    }
-    return data as ExerciseSelectItem[];
-}
-
 export default async function EditWorkoutSessionPage({
   params: paramsPromise,
 }: {
@@ -87,7 +78,7 @@ export default async function EditWorkoutSessionPage({
   const sessionId = params.sessionId
   const session = await getSessionDetails(supabase, sessionId, user.id)
   const workoutExercises = await getWorkoutExercises(supabase, sessionId, user.id)
-  const availableExercises = await getAvailableExercises(supabase, user.id)
+  // const availableExercises = await getAvailableExercises(supabase, user.id) // Removed as it's not used
 
   if (!session) {
     notFound()
@@ -114,8 +105,8 @@ export default async function EditWorkoutSessionPage({
       <div className="mb-6">
         <AddExerciseToSessionDialog 
             workoutSessionId={sessionId} 
-            availableExercises={availableExercises} 
-            userId={user.id} 
+            // availableExercises={availableExercises} // Removed as the prop is commented out in the Dialog component
+            // userId={user.id} // Also commented out in Dialog, assuming not needed by this button
         />
       </div>
 

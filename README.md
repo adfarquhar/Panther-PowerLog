@@ -67,3 +67,12 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 *   Run all checks: `pnpm check`
 
 (This project aims to adhere to Biome/Prettier/ESLint standards as per project rules - specific formatter setup might be needed if not covered by Next.js defaults) 
+
+functionality:
+Once an exercise is started, the user will see a dedicated page for it. This page will clearly show:
+The exercise name and the initial weight they just set.
+Input fields for the number of repetitions for the current set.
+A prominent "Set Done" button to log the current set of reps and weight.
+A running list or display of the sets already completed for that exercise in the current session, showing the reps and weight for each.
+An "End Exercise" button to signify they've finished with that particular exercise for the session and are ready to move on (either back to the main workout log or to add another exercise)."
+Essentially, it's an active logging screen focused on quickly inputting reps for the current set, seeing progress, managing rest, and then concluding the exercise.

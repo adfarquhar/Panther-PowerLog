@@ -17,4 +17,4 @@ Supabase:
     Interaction: Use helpers from lib/supabase/server.ts; use RPC for complex/transactional DB ops.
 Code Style: Adhere to Biome/Prettier/ESLint (pnpm run check).
 Use sonner for all feedback. if you notice Sonner not being used for feedback, please correct it. 
-This app will almost exclusively be used on an iPhone, so it should be mobile-optimized.
+This app will almost exclusively be used on an iPhone, so it should be mobile-optimized. No dropdowns.
