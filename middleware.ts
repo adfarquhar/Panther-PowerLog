@@ -1,9 +1,13 @@
 // middleware.ts
-import { createServerClient, type CookieOptions } from '@supabase/ssr';
+// import { createServerClient, type CookieOptions } from '@supabase/ssr'; // Temporarily commented out
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Database } from '@/lib/supabase/database.types'; // Ensure this path is correct
+// import type { Database } from '@/lib/supabase/database.types'; // Temporarily commented out
 
 export async function middleware(request: NextRequest) {
+  console.log("Edge Middleware invoked. Supabase client code is currently commented out for debugging __dirname error.");
+
+  // Original Supabase client initialization and logic commented out:
+  /*
   let response = NextResponse.next({
     request: {
       headers: request.headers,
@@ -61,31 +65,27 @@ export async function middleware(request: NextRequest) {
 
     const { pathname } = request.nextUrl;
 
-    // Define public paths that don't require authentication
-    const publicPaths = ['/login', '/signup', '/auth/callback']; // Add /signup
+    const publicPaths = ['/login', '/signup', '/auth/callback'];
 
-    // If the user is not authenticated and is trying to access a protected route
     if (!user && !publicPaths.some(path => pathname.startsWith(path))) {
-      // Redirect to the login page
       return NextResponse.redirect(new URL('/login', request.url));
     }
 
-    // If the user is authenticated and tries to access the login page, redirect them to the home page
-    if (user && (pathname.startsWith('/login') || pathname.startsWith('/signup'))) { // Add /signup here too
+    if (user && (pathname.startsWith('/login') || pathname.startsWith('/signup'))) {
       return NextResponse.redirect(new URL('/', request.url));
     }
   } catch (error: any) {
-    console.error('Middleware error:', error);
-    console.error('Middleware error message:', error.message);
-    console.error('Middleware error stack:', error.stack);
-    // Optionally, rethrow or return a generic error response
-    // For now, let's just return the original response to see logs
-    // or redirect to an error page if preferred.
-    // throw error; // This would likely result in the same MIDDLEWARE_INVOCATION_FAILED
-    return NextResponse.redirect(new URL('/error?message=middleware_failed', request.url)); // Or a more specific error page
+    console.error('Middleware error (within try-catch):', error);
+    console.error('Middleware error message (within try-catch):', error.message);
+    console.error('Middleware error stack (within try-catch):', error.stack);
+    return NextResponse.redirect(new URL('/error?message=middleware_failed', request.url));
   }
 
   return response;
+  */
+
+  // For now, just pass the request through
+  return NextResponse.next();
 }
 
 export const config = {
