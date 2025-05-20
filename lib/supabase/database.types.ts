@@ -18,7 +18,7 @@ export type Database = {
           set_number: number
           updated_at: string
           user_id: string
-          weight: number
+          weight: number | null
           workout_exercise_id: string
         }
         Insert: {
@@ -29,7 +29,7 @@ export type Database = {
           set_number: number
           updated_at?: string
           user_id: string
-          weight?: number
+          weight?: number | null
           workout_exercise_id: string
         }
         Update: {
@@ -40,7 +40,7 @@ export type Database = {
           set_number?: number
           updated_at?: string
           user_id?: string
-          weight?: number
+          weight?: number | null
           workout_exercise_id?: string
         }
         Relationships: [
@@ -210,6 +210,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_exercise_volume_history: {
+        Args: { p_user_id: string; p_exercise_id: string }
+        Returns: {
+          workout_date: string
+          total_volume: number
+        }[]
+      }
+      get_session_details_with_exercises: {
+        Args: { p_session_id: string; p_user_id: string }
+        Returns: Json
+      }
       get_user_exercise_pr_at_weight: {
         Args: { p_user_id: string; p_exercise_id: string; p_weight: number }
         Returns: number
@@ -217,6 +228,24 @@ export type Database = {
       get_user_exercise_pr_overall: {
         Args: { p_user_id: string; p_exercise_id: string }
         Returns: number
+      }
+      get_user_performed_exercises: {
+        Args: { p_user_id: string }
+        Returns: {
+          exercise_id: string
+          exercise_name: string
+          last_performed_date: string
+        }[]
+      }
+      get_user_workout_sessions: {
+        Args: { p_user_id: string }
+        Returns: {
+          session_id: string
+          session_name: string
+          session_date: string
+          total_exercises: number
+          total_sets: number
+        }[]
       }
     }
     Enums: {

@@ -91,9 +91,18 @@ export default function LogEntryPage({
           description: descriptionString,
         });
       } else if (result?.data) {
-        toast.success(`Started ${exercise?.name || 'exercise'} with ${weight}kg.`);
+        toast.success(`Started ${exercise?.name || 'exercise'} with ${weight}lbs.`);
         // The result.data.id is the workout_exercise_id
-        router.push(`/workout/${sessionId}/log/${result.data.id}`);
+        // The exerciseId variable from searchParams is the actual exercise.id
+        if (exerciseId) { // Ensure exerciseId is available
+          router.push(`/workout/${sessionId}/log/${exerciseId}?woExerciseId=${result.data.id}`);
+        } else {
+          // Fallback or error handling if exerciseId is somehow not available
+          // This case should be rare given the checks at the top of the component
+          toast.error('Could not navigate: exercise ID missing.');
+          // Optionally, redirect to a safe page
+          // router.push(`/workout/${sessionId}/edit`); 
+        }
       } else {
         toast.error('An unexpected error occurred.');
       }
@@ -140,7 +149,7 @@ export default function LogEntryPage({
 
       <form onSubmit={handleSubmit} className="space-y-6 max-w-md mx-auto">
         <div>
-          <Label htmlFor="weight" className="text-lg">Initial Weight (kg)</Label>
+          <Label htmlFor="weight" className="text-lg">Initial Weight (lbs)</Label>
           <Input
             id="weight"
             name="weight"

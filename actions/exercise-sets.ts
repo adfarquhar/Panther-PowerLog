@@ -76,6 +76,8 @@ export async function logExerciseSet(formData: FormData) {
     const nextSetNumber = (lastSet?.set_number || 0) + 1
 
     // 3. Insert the new set
+    const setWeight = workoutExercise.weight; // The weight for this specific set
+
     const { data: newSet, error: insertError } = await supabase
       .from('exercise_sets')
       .insert({
@@ -83,10 +85,11 @@ export async function logExerciseSet(formData: FormData) {
         user_id: user.id,
         set_number: nextSetNumber,
         reps: reps,
+        weight: setWeight, // Explicitly insert the weight for the set
         notes: notes,
         // is_pr_set_for_weight will be handled later if we implement that specific PR logic
       })
-      .select()
+      .select('id, set_number, reps, weight, notes') // Be explicit about returned fields
       .single()
 
     if (insertError || !newSet) {
@@ -122,7 +125,48 @@ export async function logExerciseSet(formData: FormData) {
     revalidatePath(`/workout/${workout_session_id}/edit`)
     // Potentially revalidate a dashboard or PR page if those exist
 
-    return { data: newSet, newTotalVolume }
+    // 5. Fetch updated PRs
+    let newPrAtWeight: number | null = null
+    try {
+      const { data: prAtWeightData, error: prAtWeightError } = await supabase.rpc(
+        'get_user_exercise_pr_at_weight',
+        {
+          p_user_id: user.id,
+          p_exercise_id: exercise_id, // from workoutExercise
+          p_weight: setWeight,       // weight of the current set
+        },
+      )
+      if (prAtWeightError) {
+        console.error('Error fetching PR at weight post-set log:', prAtWeightError)
+        // Non-fatal, proceed
+      } else {
+        newPrAtWeight = typeof prAtWeightData === 'number' ? prAtWeightData : null
+      }
+    } catch (rpcError) {
+        console.error('RPC call get_user_exercise_pr_at_weight failed:', rpcError)
+    }
+
+    let newOverallPr: number | null = null
+    try {
+        const { data: overallPrData, error: overallPrError } = await supabase.rpc(
+            'get_user_exercise_pr_overall',
+            {
+            p_user_id: user.id,
+            p_exercise_id: exercise_id, // from workoutExercise
+            },
+        )
+        if (overallPrError) {
+            console.error('Error fetching overall PR post-set log:', overallPrError)
+            // Non-fatal, proceed
+        } else {
+            newOverallPr = typeof overallPrData === 'number' ? overallPrData : null
+        }
+    } catch (rpcError) {
+        console.error('RPC call get_user_exercise_pr_overall failed:', rpcError)
+    }
+    
+
+    return { data: newSet, newTotalVolume, newPrAtWeight, newOverallPr }
   } catch (e) {
     const error = e as Error
     return { error: 'An unexpected error occurred.', details: error.message }

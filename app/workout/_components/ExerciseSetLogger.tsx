@@ -7,8 +7,14 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from 'sonner'
 import { logExerciseSet } from '@/actions/exercise-sets' // Import the server action
-// import { Tables } from '@/lib/supabase/database.types' // Unused
+import { Tables } from '@/lib/supabase/database.types' // Used for CompletedSetType
 // import { InformationCircleIcon } from '@heroicons/react/24/outline' // Unused
+
+// Define a more specific type for a completed set for clarity in the component
+type CompletedSetType = Pick<
+  Tables<'exercise_sets'>,
+  'id' | 'set_number' | 'reps' | 'weight' | 'notes'
+>
 
 interface ExerciseSetLoggerProps {
   exerciseName: string
@@ -23,6 +29,7 @@ interface ExerciseSetLoggerProps {
   exerciseId: string // For future use: re-fetching PRs
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   workoutSessionId: string // For future use: navigation/re-fetching PRs
+  allSets: CompletedSetType[] // Add allSets prop
 }
 
 export function ExerciseSetLogger({
@@ -38,6 +45,7 @@ export function ExerciseSetLogger({
   exerciseId, // Prop is currently unused but kept for future PR re-fetching logic
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   workoutSessionId, // Prop is currently unused but kept for future PR re-fetching/navigation
+  allSets: initialAllSets, // Receive allSets prop
 }: ExerciseSetLoggerProps) {
   const [isPending, startTransition] = useTransition()
   const [reps, setReps] = useState<string>('')
@@ -51,10 +59,10 @@ export function ExerciseSetLogger({
   const [runningVolumeDisplay, setRunningVolumeDisplay] = useState(
     initialRunningVolume,
   )
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [prAtWeightDisplay, setPrAtWeightDisplay_unused] = useState(initialPrAtWeight) // To be used later
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [overallPrDisplay, setOverallPrDisplay_unused] = useState(initialOverallPr) // To be used later
+  const [prAtWeightDisplay, setPrAtWeightDisplay] = useState(initialPrAtWeight)
+  const [overallPrDisplay, setOverallPrDisplay] = useState(initialOverallPr)
+
+  const [completedSets, setCompletedSets] = useState<CompletedSetType[]>(initialAllSets)
 
   // Reset reps and notes when the workoutExerciseId changes (e.g. user navigates to log a different exercise)
   // or when currentSetNumber changes, so the input is fresh for the new set.
@@ -74,25 +82,61 @@ export function ExerciseSetLogger({
           description: result.details?.toString() || 'Please try again.',
         })
       } else if (result?.data) {
+        const loggedSet = result.data
         toast.success(
-          `Set ${result.data.set_number} logged: ${result.data.reps} reps!`,
+          `Set ${loggedSet.set_number} logged: ${loggedSet.reps} reps!`,
         )
-        // Update UI state based on the successful submission
-        setCurrentSetNumber(result.data.set_number + 1)
-        setLastSetRepsDisplay(result.data.reps)
+        setCurrentSetNumber(loggedSet.set_number + 1)
+        setLastSetRepsDisplay(loggedSet.reps)
         if (result.newTotalVolume !== undefined) {
             setRunningVolumeDisplay(result.newTotalVolume)
         }
         
-        // TODO: Re-fetch PRs to see if they changed
-        // Example using currently passed (but unused) props:
-        // const newPrs = await getRefreshedPRs(exerciseId, userIdFromAuth, weight)
-        // setPrAtWeightDisplay_unused(newPrs.prAtWeight)
-        // setOverallPrDisplay_unused(newPrs.overallPr)
+        const newSet: CompletedSetType = {
+            id: loggedSet.id, 
+            set_number: loggedSet.set_number,
+            reps: loggedSet.reps,
+            weight: loggedSet.weight, 
+            notes: loggedSet.notes || null, 
+        };
+        setCompletedSets(prevSets => [...prevSets, newSet]);
+        
+        // Handle PRs
+        if (result.newPrAtWeight !== undefined) {
+          if (result.newPrAtWeight !== null && result.newPrAtWeight === loggedSet.reps && loggedSet.weight === weight) {
+            // Check if this set *is* the new PR for this weight
+            // This condition might need refinement based on how get_user_exercise_pr_at_weight defines a PR.
+            // Assuming it returns max reps, and we logged a set that matches these max reps at this weight.
+             if (initialPrAtWeight === null || loggedSet.reps > initialPrAtWeight) {
+                 toast.success(`🎉 New PR at ${loggedSet.weight}lbs: ${loggedSet.reps} reps!`);
+             }
+          }
+          setPrAtWeightDisplay(result.newPrAtWeight)
+        }
 
-        // Clear form for next set
-        setReps('') // Already handled by useEffect on currentSetNumber change
-        setNotes('') // Already handled by useEffect on currentSetNumber change
+        if (result.newOverallPr !== undefined) {
+          // The definition of "overall PR" needs to be clear.
+          // Assuming get_user_exercise_pr_overall returns the highest weight lifted for any reps.
+          // And that newOverallPr holds this value.
+          // If the current set's weight is part of this new overall PR.
+          // This is a simplified check; a more robust check would compare against the previous overallPrDisplay
+          if (result.newOverallPr !== null && loggedSet.weight === result.newOverallPr ) {
+             if (initialOverallPr === null || loggedSet.weight > initialOverallPr) {
+                toast.success(`🏆 New Overall PR: ${loggedSet.weight}lbs!`);
+             }
+          }
+          // Or, if overall PR is max volume (weight * reps)
+          // const currentSetVolume = loggedSet.reps * loggedSet.weight;
+          // if (result.newOverallPr !== null && currentSetVolume === result.newOverallPr) {
+          //    if (initialOverallPr === null || currentSetVolume > initialOverallPr) {
+          //      toast.success(`🏆 New Overall PR Volume: ${currentSetVolume} lbs-reps!`);
+          //    }
+          // }
+          setOverallPrDisplay(result.newOverallPr)
+        }
+
+        setReps('') 
+        setNotes('') 
       } else {
         toast.error('An unexpected error occurred. Please try again.')
       }
@@ -108,7 +152,7 @@ export function ExerciseSetLogger({
           {exerciseName}
         </h2>
         <p className="text-xl text-gray-600 dark:text-gray-300">
-          Weight: {weight} {weight !== 0 ? 'kg' : '(Bodyweight)'}
+          Weight: {weight} {weight !== 0 ? 'lbs' : '(Bodyweight)'}
         </p>
       </div>
 
@@ -172,6 +216,37 @@ export function ExerciseSetLogger({
         {isPending ? 'Logging...' : 'Log Set'}
       </Button>
 
+      {/* Display Completed Sets */}
+      {completedSets.length > 0 && (
+        <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+          <h3 className="text-xl font-semibold text-center mb-4 text-gray-800 dark:text-gray-100">
+            Completed Sets
+          </h3>
+          <ul className="space-y-3">
+            {completedSets.map((set) => (
+              <li
+                key={set.id}
+                className="flex flex-col sm:flex-row sm:justify-between sm:items-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-sm"
+              >
+                <div className="flex items-center mb-2 sm:mb-0">
+                  <span className="font-semibold text-gray-700 dark:text-gray-200 mr-3">
+                    Set {set.set_number}:
+                  </span>
+                  <span className="text-lg text-gray-900 dark:text-white">
+                    {set.reps} reps @ {set.weight} lbs
+                  </span>
+                </div>
+                {set.notes && (
+                  <p className="text-sm text-gray-500 dark:text-gray-400 sm:ml-4 italic">
+                    Notes: {set.notes}
+                  </p>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       <div className="mt-6 space-y-3 pt-6 border-t border-gray-200 dark:border-gray-700">
         <h3 className="text-xl font-semibold text-center text-gray-800 dark:text-gray-100">
           Performance
@@ -182,23 +257,23 @@ export function ExerciseSetLogger({
               Running Volume
             </p>
             <p className="text-2xl font-semibold text-gray-900 dark:text-white">
-              {runningVolumeDisplay.toFixed(1)} kg
+              {runningVolumeDisplay.toFixed(1)} lbs
             </p>
           </div>
           <div>
             <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-              PR at {weight} kg
+              PR at {weight} lbs
             </p>
             <p className="text-2xl font-semibold text-gray-900 dark:text-white">
-              {prAtWeightDisplay === null ? '-' : `${prAtWeightDisplay} kg`}
+              {prAtWeightDisplay === null ? '-' : `${prAtWeightDisplay} reps`}
             </p>
           </div>
           <div>
             <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-              Overall Exercise PR
+              Overall PR
             </p>
             <p className="text-2xl font-semibold text-gray-900 dark:text-white">
-              {overallPrDisplay === null ? '-' : `${overallPrDisplay} kg`}
+              {overallPrDisplay === null ? '-' : `${overallPrDisplay} lbs`}
             </p>
           </div>
         </div>

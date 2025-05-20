@@ -136,11 +136,11 @@ export default async function EditWorkoutSessionPage({
                     {woExercise.exercises.muscle_groups?.name || 'N/A'}
                   </p>
                   <p className="text-sm text-gray-600 dark:text-gray-300">
-                    Target Weight: {woExercise.weight} kg
+                    Target Weight: {woExercise.weight} lbs
                   </p>
                   {woExercise.total_volume !== null && woExercise.total_volume > 0 && (
                      <p className="text-sm font-medium text-indigo-600 dark:text-indigo-400">
-                        Volume: {woExercise.total_volume.toFixed(1)} kg
+                        Volume: {woExercise.total_volume.toFixed(1)} lbs
                     </p>
                   )}
                 </div>
