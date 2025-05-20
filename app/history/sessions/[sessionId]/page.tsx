@@ -1,10 +1,9 @@
 import { createServerComponentClient } from '@/lib/supabase/server';
 import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeftIcon, CalendarDaysIcon, BookOpenIcon, FireIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon, CalendarDaysIcon } from '@heroicons/react/24/outline';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/lib/supabase/database.types';
-import { Badge } from '@/components/ui/badge';
 
 interface SetData {
   set_id: string;
