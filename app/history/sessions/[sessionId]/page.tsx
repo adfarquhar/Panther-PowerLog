@@ -35,7 +35,7 @@ async function getSessionDetails(
   sessionId: string, 
   userId: string
 ): Promise<SessionDetailsData | null> {
-  const { data, error } = await supabase.rpc('get_session_details_with_exercises', {
+  const { data, error } = await supabase.rpc<SessionDetailsData>('get_session_details_with_exercises', {
     p_session_id: sessionId,
     p_user_id: userId,
   });
@@ -44,9 +44,11 @@ async function getSessionDetails(
     console.error('Error fetching session details:', error?.message);
     return null;
   }
-  // The RPC returns a single JSONB object, so we cast it directly.
-  // Add further validation/transformation if necessary.
-  return data as SessionDetailsData;
+  // The RPC is expected to return a single JSONB object matching SessionDetailsData.
+  // By providing the generic <SessionDetailsData> to the rpc call,
+  // 'data' is now correctly typed as SessionDetailsData | null.
+  // The 'if (!data)' check above ensures 'data' is not null here.
+  return data;
 }
 
 export default async function SessionDetailPage({
