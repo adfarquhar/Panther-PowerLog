@@ -53,7 +53,7 @@ export default async function ExerciseSelectionPage({
       <div className="mb-6 flex items-center">
         <Link
           href={`/workout/${sessionId}/add-exercise/muscle-groups`}
-          className="mr-4 p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full"
+          className="mr-4 p-2 hover:bg-gray-200 rounded-full"
         >
           <ArrowLeftIcon className="h-6 w-6" />
         </Link>
@@ -74,10 +74,10 @@ export default async function ExerciseSelectionPage({
             <li key={exercise.id}>
               <Link
                 href={`/workout/${sessionId}/add-exercise/log-entry?exerciseId=${exercise.id}&exerciseName=${encodeURIComponent(exercise.name)}`}
-                className="flex items-center justify-between rounded-lg bg-white p-4 shadow transition-shadow hover:shadow-md dark:bg-gray-800"
+                className="flex items-center justify-between rounded-lg bg-white p-4 shadow transition-shadow hover:shadow-md"
               >
                 <span className="text-lg font-medium">{exercise.name}</span>
-                <ChevronRightIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+                <ChevronRightIcon className="h-5 w-5" />
               </Link>
             </li>
           ))}

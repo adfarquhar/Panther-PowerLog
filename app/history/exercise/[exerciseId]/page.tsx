@@ -75,12 +75,12 @@ export default async function ExerciseHistoryPage({
             <ArrowLeftIcon className="w-4 h-4 mr-1.5" />
             Back to History
         </Link>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+        <h1 className="text-3xl font-bold">
           Progress for {exerciseDetails.name}
         </h1>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-4 md:p-6">
+      <div className="bg-white shadow-md rounded-lg p-4 md:p-6">
         <VolumeHistoryChart data={volumeHistoryData} exerciseName={exerciseDetails.name} />
       </div>
       

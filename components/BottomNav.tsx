@@ -1,11 +1,10 @@
 'use client'
 import Link from 'next/link';
-import { HomeIcon, ClockIcon, PlusCircleIcon } from '@heroicons/react/24/outline'; // Removed UserCircleIcon
+import { HomeIcon, ClockIcon } from '@heroicons/react/24/outline'; // Removed UserCircleIcon and PlusCircleIcon
 import { usePathname } from 'next/navigation';
 
 const navItems = [
   { href: '/', label: 'Home', icon: HomeIcon },
-  { href: '/workout', label: 'New Workout', icon: PlusCircleIcon }, // Placeholder for new workout start
   { href: '/history', label: 'History', icon: ClockIcon },
   // { href: '/profile', label: 'Profile', icon: UserCircleIcon }, // Example for future
 ];

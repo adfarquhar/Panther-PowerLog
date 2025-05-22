@@ -34,10 +34,10 @@ export default async function HistoryPage() {
   return (
     <div className="container mx-auto p-4 md:p-6 max-w-4xl">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+        <h1 className="text-3xl font-bold mb-2">
           Workout History
         </h1>
-        <p className="text-lg text-gray-600 dark:text-gray-300">
+        <p className="text-lg">
           Review your progress and past workout sessions.
         </p>
         <div className="mt-4">
@@ -49,11 +49,11 @@ export default async function HistoryPage() {
       </div>
 
       <div>
-        <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4">
+        <h2 className="text-2xl font-semibold mb-4">
           Exercise Progress
         </h2>
         {exercises.length === 0 && (
-          <p className="text-gray-500 dark:text-gray-400">No exercises logged yet. Start a workout to see your progress here!</p>
+          <p>No exercises logged yet. Start a workout to see your progress here!</p>
         )}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {exercises.map((exercise) => (

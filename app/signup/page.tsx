@@ -66,13 +66,13 @@ export default function SignupPage() {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-md dark:bg-gray-800">
-        <h1 className="mb-6 text-center text-3xl font-bold text-gray-800 dark:text-white">
+      <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-md">
+        <h1 className="mb-6 text-center text-3xl font-bold">
           Create Account
         </h1>
         <form onSubmit={handleSignup} className="space-y-6">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+            <label htmlFor="email" className="block text-sm font-medium">
               Email address
             </label>
             <Input
@@ -86,7 +86,7 @@ export default function SignupPage() {
             />
           </div>
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+            <label htmlFor="password" className="block text-sm font-medium">
               Password
             </label>
             <Input
@@ -101,7 +101,7 @@ export default function SignupPage() {
             />
           </div>
            <div>
-            <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+            <label htmlFor="confirm-password" className="block text-sm font-medium">
               Confirm Password
             </label>
             <Input
@@ -119,7 +119,7 @@ export default function SignupPage() {
             {loading ? 'Creating Account...' : 'Create Account'}
           </Button>
         </form>
-        <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-300">
+        <p className="mt-6 text-center text-sm">
           Already have an account?{' '}
           <Link href="/login" className="font-medium text-primary hover:underline">
             Log in

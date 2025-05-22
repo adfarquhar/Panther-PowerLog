@@ -2,8 +2,6 @@
 
 import { createNewWorkoutSession } from "@/actions/workout-sessions";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useTransition } from "react";
 
@@ -51,22 +49,10 @@ export default function HomePage() {
         onSubmit={handleSubmit}
         className="w-full max-w-sm p-8 rounded-xl shadow-2xl space-y-6"
       >
-        <div>
-          <Label htmlFor="workoutName" className="text-lg font-medium">
-            Workout Name
-          </Label>
-          <Input
-            id="workoutName"
-            name="workoutName"
-            type="text"
-            placeholder="e.g., Morning Lift, Leg Day"
-            className="mt-2 w-full text-white placeholder-slate-400 focus:ring-emerald-500 focus:border-emerald-500 h-12 text-lg"
-          />
-        </div>
-        <div className="flex justify-center">
+        <div className="flex justify-center pt-8">
           <Button
             type="submit"
-            className="bg-emerald-500 hover:bg-emerald-600 font-semibold rounded-lg text-xl transition-all duration-150 ease-in-out transform active:scale-95 px-6 py-3"
+            className="bg-emerald-500 hover:bg-emerald-600 font-semibold rounded-lg text-xl transition-all duration-150 ease-in-out transform active:scale-95 px-8 py-4"
             disabled={isPending}
           >
             {isPending ? 'Starting Workout...' : 'BEGIN'}

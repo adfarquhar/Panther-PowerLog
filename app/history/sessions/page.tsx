@@ -43,16 +43,16 @@ export default async function WorkoutSessionsHistoryPage() {
             <ArrowLeftIcon className="w-4 h-4 mr-1.5" />
             Back to Main History
         </Link>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+        <h1 className="text-3xl font-bold mb-2">
           All Workout Sessions
         </h1>
-        <p className="text-lg text-gray-600 dark:text-gray-300">
+        <p className="text-lg">
           Browse your past workout sessions.
         </p>
       </div>
 
       {sessions.length === 0 && (
-        <p className="text-gray-500 dark:text-gray-400">No workout sessions found. Start a new workout!</p>
+        <p>No workout sessions found. Start a new workout!</p>
       )}
       <div className="space-y-4">
         {sessions.map((session) => (
@@ -64,7 +64,7 @@ export default async function WorkoutSessionsHistoryPage() {
                 {/* Optional: Add an icon or button to view details */}
               </CardTitle>
               <CardDescription className="flex items-center mt-1">
-                <CalendarDaysIcon className="w-4 h-4 mr-1.5 text-gray-500 dark:text-gray-400" />
+                <CalendarDaysIcon className="w-4 h-4 mr-1.5" />
                 {new Date(session.session_date).toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: 'long',
@@ -75,8 +75,8 @@ export default async function WorkoutSessionsHistoryPage() {
               </CardDescription>
             </CardHeader>
             <CardContent> {/* Using CardContent for the details below header */}
-                <p className="text-sm text-gray-600 dark:text-gray-300">Exercises: {session.total_exercises}</p>
-                <p className="text-sm text-gray-600 dark:text-gray-300">Total Sets: {session.total_sets}</p>
+                <p className="text-sm">Exercises: {session.total_exercises}</p>
+                <p className="text-sm">Total Sets: {session.total_sets}</p>
                  {/* Consider adding a button here to navigate to the session detail page */}
                  <Link href={`/history/sessions/${session.session_id}`} className="mt-3 inline-block text-sm text-primary hover:underline">
                     View Details
